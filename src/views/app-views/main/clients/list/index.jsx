@@ -3,16 +3,19 @@ import AvatarStatus from 'components/shared-components/AvatarStatus';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import Loading from 'components/shared-components/Loading';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
+import UserView from '../userView';
 
-const List = ({match}) => {
+const List = ({ match }) => {
   const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false)
-  const history = useHistory()
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userProfileVisible, setUserProfileVisible] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     const getUsers = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
         const response = await fetch(
           'https://jsonplaceholder.typicode.com/users'
@@ -26,17 +29,27 @@ const List = ({match}) => {
       } catch (error) {
         console.error('Ошибка при выполнении запроса:', error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     };
     getUsers();
   }, []);
 
   const deleteUser = (userId) => {
-    const newUsers = users.filter(item => item.id !== userId)
-		setUsers(newUsers)
-		message.success({ content: `Deleted user ${userId}`, duration: 2 });
-	}
+    const newUsers = users.filter((item) => item.id !== userId);
+    setUsers(newUsers);
+    message.success({ content: `Deleted user ${userId}`, duration: 2 });
+  };
+
+  const showUserProfile = (userInfo) => {
+    setSelectedUser(userInfo)
+    setUserProfileVisible(true)
+  };
+
+  const closeUserProfile = () => {
+    setSelectedUser(null)
+    setUserProfileVisible(false)
+  };
 
   const tableColumns = [
     {
@@ -63,7 +76,7 @@ const List = ({match}) => {
     {
       title: 'City',
       dataIndex: 'address',
-      render: date => <div>{date.city}</div>,
+      render: (date) => <div>{date.city}</div>,
       sorter: {
         compare: (a, b) => {
           a = a.address.city.toLowerCase();
@@ -75,7 +88,7 @@ const List = ({match}) => {
     {
       title: 'Company',
       dataIndex: 'company',
-      render: date => <div>{date.name}</div>,
+      render: (date) => <div>{date.name}</div>,
       sorter: {
         compare: (a, b) => {
           a = a.company.name.toLowerCase();
@@ -89,6 +102,17 @@ const List = ({match}) => {
       dataIndex: 'actions',
       render: (_, elm) => (
         <div className="text-right">
+          <Tooltip title="View">
+            <Button
+              type="primary"
+              className="mr-2"
+              icon={<EyeOutlined />}
+              onClick={() => {
+                showUserProfile(elm);
+              }}
+              size="small"
+            />
+          </Tooltip>
           <Tooltip title="Delete">
             <Button
               danger
@@ -103,12 +127,19 @@ const List = ({match}) => {
   ];
 
   if (isLoading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
     <Card bodyStyle={{ padding: '0px' }}>
       <Table columns={tableColumns} dataSource={users} rowKey="id" />
+      {userProfileVisible && (
+        <UserView
+          data={selectedUser}
+          visible={userProfileVisible}
+          close={() => closeUserProfile()}
+        />
+      )}
     </Card>
   );
 };

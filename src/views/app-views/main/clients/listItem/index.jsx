@@ -62,8 +62,6 @@ const ListItem = () => {
     return <Loading />;
   }
 
-  console.log(user, 'user');
-
   return (
     <>
       <Flex

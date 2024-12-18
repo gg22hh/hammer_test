@@ -18,3 +18,12 @@
 .avatar-status-name.clickable {
   cursor: pointer;
 }
+.ant-row.ant-form-item-row {
+  align-items: center;
+  gap: 15px;
+}
+.ant-breadcrumb ol {
+  list-style: none;
+  display: flex;
+  margin: 0;
+}

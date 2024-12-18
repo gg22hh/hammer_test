@@ -3,7 +3,6 @@ import React, { lazy, Suspense } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 const Main = ({ match }) => {
-  console.log(match, 'match')
   return (
     <Suspense fallback={<Loading cover="content" />}>
       <Switch>

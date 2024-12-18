@@ -87,7 +87,7 @@ const mainNavTree = [
             key: 'main-clients-list',
             path: `${APP_PREFIX_PATH}/main/clients/list`,
             title: 'Список клиентов',
-            breadcrumb: false,
+            breadcrumb: true,
             submenu: []
           },
           {
